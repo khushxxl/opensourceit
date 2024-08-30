@@ -1,35 +1,29 @@
-import { MongoClient } from "mongodb";
+// lib/mongodb.ts
+import mongoose from "mongoose";
 
-const uri = process.env.MONGODB_URI as string; // your mongodb connection string
-const options = {};
+const MONGODB_URI = process.env.MONGODB_URI as string;
 
-declare global {
-  var _mongoClientPromise: Promise<MongoClient>;
+if (!MONGODB_URI) {
+  throw new Error(
+    "Please define the MONGODB_URI environment variable inside .env.local"
+  );
 }
 
-class Singleton {
-  private static _instance: Singleton;
-  private client: MongoClient;
-  private clientPromise: Promise<MongoClient>;
-  private constructor() {
-    this.client = new MongoClient(uri, options);
-    this.clientPromise = this.client.connect();
-    if (process.env.NODE_ENV === "development") {
-      // In development mode, use a global variable so that the value
-      // is preserved across module reloads caused by HMR (Hot Module Replacement).
-      global._mongoClientPromise = this.clientPromise;
-    }
+let cachedClient: mongoose.Mongoose | null = null;
+let cachedDb: mongoose.Connection | null = null;
+
+export async function connectToDatabase() {
+  if (cachedDb) {
+    return { client: cachedClient, db: cachedDb };
   }
 
-  public static get instance() {
-    if (!this._instance) {
-      this._instance = new Singleton();
-    }
-    return this._instance.clientPromise;
+  try {
+    cachedClient = await mongoose.connect(MONGODB_URI);
+    cachedDb = cachedClient.connection;
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB", error);
   }
+
+  return { client: cachedClient, db: cachedDb };
 }
-const clientPromise = Singleton.instance;
-
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise;

@@ -1,12 +1,14 @@
 import AddProjectSchema from "@/app/models/AddProjectSchema";
+import { connectToDatabase } from "@/mongo";
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest) {
   try {
+    await connectToDatabase();
+
     const body = await request.json();
     const projectId = body.projectId;
     const user = await AddProjectSchema.findByIdAndDelete(projectId);
-
     if (!user) {
       return new Response(JSON.stringify({ message: "User not found" }), {
         status: 404,
