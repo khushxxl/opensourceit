@@ -1,11 +1,13 @@
 import AddProjectSchema from "@/app/models/AddProjectSchema";
-import { connectToDatabase } from "@/mongo";
+import { connectToDatabase } from "@/lib";
+import { connect } from "http2";
+
 import { NextRequest } from "next/server";
 
 export async function DELETE(request: NextRequest) {
-  try {
-    await connectToDatabase();
+  await connectToDatabase();
 
+  try {
     const body = await request.json();
     const projectId = body.projectId;
     const user = await AddProjectSchema.findByIdAndDelete(projectId);

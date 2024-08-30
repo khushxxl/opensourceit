@@ -1,11 +1,12 @@
 import AddProjectSchema from "@/app/models/AddProjectSchema";
-import { connectToDatabase } from "@/mongo";
+import { connectToDatabase } from "@/lib";
+
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  try {
-    await connectToDatabase();
+  await connectToDatabase();
 
+  try {
     const projects = await AddProjectSchema.find({});
 
     if (!projects) {

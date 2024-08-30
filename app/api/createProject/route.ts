@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import AddProjectSchema from "@/app/models/AddProjectSchema";
-import { connectToDatabase } from "@/mongo";
+import { connectToDatabase } from "@/lib";
 
 export async function POST(req: NextRequest) {
+  await connectToDatabase();
+
   try {
-    await connectToDatabase();
     const body = await req.json();
     const projectData = body.formData;
 
