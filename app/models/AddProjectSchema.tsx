@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
-mongoose.connect(process.env.MONGO_URL!);
+mongoose.connect(
+  "mongodb+srv://khushaalchoithramani:3dCpzg8zZaFt6QDm@stipemecluster.shnu1dc.mongodb.net/opensource-saas-db"
+);
 
 mongoose.Promise = global.Promise;
 
