@@ -19,7 +19,7 @@ function Navbar() {
   return (
     <div className={`p-8 flex items-center justify-between   bg-white`}>
       <div>
-        <h1 className="font-bold text-xl">opensourceit.com</h1>
+        <h1 className="font-bold text-xl">opensourceit</h1>
       </div>
       <div className="flex items-center space-x-5">
         {/* <div className="w-fit min-w-[170px]">

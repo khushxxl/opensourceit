@@ -11,7 +11,7 @@ function Footer() {
           <p>khushaal.choithramani@gmail.com</p>
         </div>
         <div className="text-gray-500 mt-5">
-          <p className="underline">2024 © opensourceit.com</p>
+          <p className="underline">2024 © opensourceit</p>
         </div>
         <div className="text-gray-500 flex items-center flex-col mt-5 lg:mt-0">
           <p> Made by Khush with 💜</p>

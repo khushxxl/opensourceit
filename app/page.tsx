@@ -56,6 +56,10 @@ export default function Home() {
       });
   }, []);
 
+  useEffect(() => {
+    console.log("logging all projects", allOpenSourceProjects);
+  }, []);
+
   return (
     <main className="relative flex min-h-screen flex-col items-center max-w-7xl mx-auto p-24">
       <div className="flex flex-col items-center lg:flex-row">
