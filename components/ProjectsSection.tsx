@@ -102,7 +102,7 @@ function ProjectsSection({
               Learn More
             </Button>
             {data?.tags && (
-              <div className=" grid grid-cols-4 gap-4 mt-4">
+              <div className=" grid grid-cols-2 gap-4 mt-4">
                 {data?.tags?.map((data: any, i: number) => {
                   return (
                     <div
