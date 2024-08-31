@@ -69,11 +69,11 @@ function ProjectsSection({
   if (filteredProjects) {
     return (
       <div className="flex flex-col justify-start items-start mt-20 min-h-[80vh]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-10 gap-y-5 mt-10 place-content-center place-items-center">
           {filteredProjects.map((data: any, i: number) => (
             <div
               key={i}
-              className="border rounded p-5 relative min-w-max max-w-lg max-h-[350px]"
+              className="border rounded  relative max-w-lg min-h-[350px] min-w-[300px] p-5"
             >
               <p className="font-bold text-lg bg-gradient-to-t mt-5 from-purple-800 h-fit via-violet-900 to-purple-800 text-transparent bg-clip-text">
                 {data?.projectName}
