@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { GithubIcon, Link2, LinkIcon } from "lucide-react";
+import Image from "next/image";
 
 function Sidebar({
   selectedProject,
@@ -54,7 +55,7 @@ function Sidebar({
             );
           })}
         </div>
-        <div className="mt-4">
+        <div className="mt-5">
           <Link target="_blank" href={selectedProject?.githubURL}>
             <Button className="flex space-x-4" variant={"outline"}>
               <span> Contribute on Github </span>
@@ -63,16 +64,34 @@ function Sidebar({
           </Link>
         </div>
 
-        {selectedProject?.liveUrl && (
-          <div className="mt-4">
-            <Link target="_blank" href={selectedProject?.githubURL}>
-              <Button className="flex space-x-4" variant={"outline"}>
-                <span> Visit Live Project</span>
-                <LinkIcon />
-              </Button>
-            </Link>
-          </div>
-        )}
+        <div className="flex items-center space-x-4 mt-7">
+          {selectedProject?.liveUrl && (
+            <div className="">
+              <Link target="_blank" href={selectedProject?.githubURL}>
+                <Button className="flex space-x-4" variant={"outline"}>
+                  <span> Visit Live Project</span>
+                  <LinkIcon />
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {selectedProject?.twitterlink && (
+            <div>
+              <Link href={selectedProject?.twitterlink}>
+                <Button variant={"outline"}>
+                  <Image
+                    height={13}
+                    width={13}
+                    alt=""
+                    className="mx-2"
+                    src={require("../app/assets/xlogo.png")}
+                  />
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
