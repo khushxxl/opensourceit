@@ -9,6 +9,9 @@ import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { AppContext } from "@/context/AppContext";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
+import Image from "next/image";
 
 function AddProjectSidebar({
   handleCloseSidebar,
@@ -27,7 +30,12 @@ function AddProjectSidebar({
     githubURL: "",
     tags: [] as string[],
     liveUrl: "",
-    projectOwner: user,
+    projectOwner: {
+      userName: user?.fullName,
+      emailId: user?.emailAddresses[0].emailAddress,
+      profileImg: user?.imageUrl,
+    },
+    twitterlink: "",
   });
   const [tag, setTag] = useState("");
 
@@ -47,16 +55,23 @@ function AddProjectSidebar({
     }
   };
 
-  async function getAllProjects() {
-    const response = await fetch(`/api/getAllProjects`);
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Something went wrong");
-    }
-    const userData = await response.json();
-    return userData;
-  }
+  const getAllOpenSourceProjectsFirebase = async () => {
+    const projects: any[] = [];
+    const querySnapshot = await getDocs(
+      collection(db, "all-open-source-projects")
+    );
 
+    querySnapshot.forEach((doc) => {
+      const projectData = {
+        id: doc.id, // Include the document ID
+        ...doc.data(), // Spread the document data
+      };
+      console.log(projectData.id, " => ", projectData);
+      projects.push(projectData);
+    });
+
+    setallOpenSourceProjects(projects);
+  };
   const addTags = () => {
     if (formData.tags.length >= 5 || tag.length > 8) {
       return;
@@ -85,37 +100,30 @@ function AddProjectSidebar({
     }
     return true;
   };
+  const [loading, setloading] = useState(false);
 
   const handleSubmit = async () => {
+    setloading(true);
+    toast.loading("Adding your project", { id: "1" });
     if (!validateForm()) {
+      setloading(false);
+      toast.error("Error in adding your project", { id: "1" });
       return;
     }
 
     try {
-      const res = await fetch("/api/createProject", {
-        method: "POST",
-        body: JSON.stringify({ formData }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        return toast.error("Failed to add Project");
-      }
-      toast.success("Project created");
-      await getAllProjects()
-        .then((result) => {
-          setallOpenSourceProjects(result);
-          console.log("Open Source Projects", result);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      handleCloseSidebar();
+      await addDoc(collection(db, "all-open-source-projects"), formData).then(
+        async () => {
+          await getAllOpenSourceProjectsFirebase();
+          toast.success("Project created", { id: "1" });
+          setloading(false);
+          handleCloseSidebar();
+        }
+      );
     } catch (error) {
+      setloading(false);
+      toast.error("Error in adding your project", { id: "1" });
       console.log(error);
-      toast.error("An error occurred while adding the project.");
     }
   };
 
@@ -151,6 +159,7 @@ function AddProjectSidebar({
             value={formData.projectName}
             onChange={handleInputChange}
             required
+            placeholder="Enter name of your project"
           />
         </div>
         <div>
@@ -161,6 +170,7 @@ function AddProjectSidebar({
             value={formData.projectBy}
             onChange={handleInputChange}
             required
+            placeholder="Enter your name"
           />
         </div>
         <div>
@@ -171,6 +181,7 @@ function AddProjectSidebar({
             value={formData.projectDescription}
             onChange={handleInputChange}
             required
+            placeholder="Describe what is your project about, you can also write about the areas where you would like the community to help you with!"
           />
         </div>
         <div>
@@ -191,6 +202,28 @@ function AddProjectSidebar({
             className="mt-3"
             placeholder="Enter your Project's URL"
             value={formData.liveUrl}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <div className="flex items-center space-x-2">
+            <Label className="flex items-center space-x-2">
+              Your
+              <Image
+                height={13}
+                width={13}
+                alt=""
+                className="mx-2"
+                src={require("../app/assets/xlogo.png")}
+              />
+              handle (optional)
+            </Label>
+          </div>
+          <Input
+            name="twitterlink"
+            className="mt-3"
+            placeholder="Enter your Project's / Creators Twitter handle"
+            value={formData.twitterlink}
             onChange={handleInputChange}
           />
         </div>
@@ -234,7 +267,7 @@ function AddProjectSidebar({
             You can enter a maximum of 5 tags
           </p>
         )}
-        <Button className="px-10" onClick={handleSubmit}>
+        <Button disabled={loading} className="px-10" onClick={handleSubmit}>
           Submit
         </Button>
       </div>

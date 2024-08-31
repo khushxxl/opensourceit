@@ -9,6 +9,9 @@ import AddProjectSidebar from "@/components/AddProjectSidebar";
 import { GithubIcon } from "lucide-react";
 import ProjectsSection from "@/components/ProjectsSection";
 import Link from "next/link";
+import { getAllOpenSourceProjectsFirebase } from "@/lib/actions/projects.action";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,25 +38,25 @@ export default function Home() {
     setshowAddProjectSidebar(!showAddProjectSidebar);
   };
 
-  async function getAllProjects() {
-    const response = await fetch(`/api/getAllProjects`);
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Something went wrong");
-    }
-    const userData = await response.json();
-    return userData;
-  }
+  const getAllOpenSourceProjectsFirebase = async () => {
+    const projects: any[] = [];
+    const querySnapshot = await getDocs(
+      collection(db, "all-open-source-projects")
+    );
 
+    querySnapshot.forEach((doc) => {
+      const projectData = {
+        id: doc.id, // Include the document ID
+        ...doc.data(), // Spread the document data
+      };
+      console.log(projectData.id, " => ", projectData);
+      projects.push(projectData);
+    });
+
+    setallOpenSourceProjects(projects);
+  };
   useEffect(() => {
-    getAllProjects()
-      .then((result) => {
-        setallOpenSourceProjects(result);
-        console.log("Open Source Projects", result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    getAllOpenSourceProjectsFirebase();
   }, []);
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { AppContext } from "@/context/AppContext";
 import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
+import Link from "next/link";
 
 function Navbar() {
   const {
@@ -19,7 +20,9 @@ function Navbar() {
   return (
     <div className={`p-8 flex items-center justify-between   bg-white`}>
       <div>
-        <h1 className="font-bold text-xl">opensourceit</h1>
+        <Link href={"/"}>
+          <h1 className="font-bold cursor-pointer text-xl">opensourceit</h1>
+        </Link>
       </div>
       <div className="flex items-center space-x-5">
         {/* <div className="w-fit min-w-[170px]">
