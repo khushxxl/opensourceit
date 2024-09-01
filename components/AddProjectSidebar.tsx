@@ -55,6 +55,12 @@ function AddProjectSidebar({
     }
   };
 
+  const handleAdd = (event: any) => {
+   
+      addTags();
+  
+  };
+
   const getAllOpenSourceProjectsFirebase = async () => {
     const projects: any[] = [];
     const querySnapshot = await getDocs(
@@ -230,7 +236,10 @@ function AddProjectSidebar({
 
         <div>
           <Label>Tags (Eg. Tech Stack)</Label>
-          <Input
+      
+
+          <div className="flex w-full items-center space-x-2">
+        <Input
             onChange={(e) => setTag(e.target.value)}
             onKeyDown={handleKeyDown}
             className="mt-3"
@@ -238,10 +247,11 @@ function AddProjectSidebar({
             value={tag}
             maxLength={8}
           />
+          <p className= " text-blue-800 hover:text-blue-950 cursor-pointer font-semibold py-2 px-3 mt-3 text-sm " onClick={handleAdd} >Add</p>
+        </div>
           <p
-            className={`text-xs ${
-              tag.length > 8 ? "text-red-600" : "text-gray-600"
-            }`}
+            className={`text-xs ${tag.length > 8 ? "text-red-600" : "text-gray-600"
+              }`}
           >
             {tag.length}/8
           </p>
