@@ -18,27 +18,28 @@ function Navbar() {
 
   const { isSignedIn } = useAuth();
   return (
-    <div className={`p-8 flex items-center justify-between   bg-white`}>
+    <div className={`px-3 py-3 md:p-8 flex items-center justify-between   bg-white`}>
       <div>
         <Link href={"/"}>
           <h1 className="font-bold cursor-pointer text-xl">opensourceit</h1>
         </Link>
       </div>
-      <div className="flex items-center space-x-5">
+      <div className="flex items-center space-x-1 md:space-x-5">
         {/* <div className="w-fit min-w-[170px]">
           <CategorySelector />
         </div> */}
         <Input
           onChange={(e) => setfilterText(e.target.value)}
           placeholder="Search for a project"
-          className="w-fit hidden lg:flex"
+          className=" w-[160px] h-[40px]  text-[12px] md:w-fit "
         />
         {isSignedIn ? (
           <div className="flex items-center space-x-3">
-            <Button
+
+            <Button className="hidden md:flex "
               onClick={() => setshowAddProjectSidebar(!showAddProjectSidebar)}
             >
-              <Plus size={18} className="mr-2" /> Add Project
+              <Plus size={18} className="mr-2 " /> Add Project
             </Button>
             <UserButton />
           </div>

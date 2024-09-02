@@ -9,13 +9,16 @@ import AddProjectSidebar from "@/components/AddProjectSidebar";
 import { GithubIcon } from "lucide-react";
 import ProjectsSection from "@/components/ProjectsSection";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { getAllOpenSourceProjectsFirebase } from "@/lib/actions/projects.action";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
+import { SignInButton, useAuth } from "@clerk/nextjs";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<any>(null);
+  const {isSignedIn} = useAuth()
 
   const {
     showAddProjectSidebar,
@@ -49,7 +52,7 @@ export default function Home() {
         id: doc.id, // Include the document ID
         ...doc.data(), // Spread the document data
       };
-      console.log(projectData.id, " => ", projectData);
+  
       projects.push(projectData);
     });
 
@@ -66,9 +69,10 @@ export default function Home() {
   return (
     <main className="relative flex min-h-screen flex-col items-center max-w-7xl mx-auto p-24">
       <div className="flex flex-col items-center lg:flex-row">
-        <p className="bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 text-5xl text-center text-transparent bg-clip-text font-extrabold">
+        <p className="bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 text-5xl text-center text-transparent bg-clip-text font-extrabold ">
           Open Source your projects
         </p>
+
         <GithubIcon size={40} className="ml-3 mt-3 lg:mt-0" fill="black" />
       </div>
       <p className="text mt-5 text-gray-400 max-w-xl text-center">
@@ -82,7 +86,23 @@ export default function Home() {
             #buildinpublic
           </span>
         </Link>
+    
+       
+          
+    
       </p>
+      <div>
+        {isSignedIn ? <Button className="mt-4 md:hidden"
+            onClick={() => setshowAddProjectSidebar(!showAddProjectSidebar)} 
+          >
+            <Plus size={18} className="mr-2 " /> Add Project
+          </Button>:
+    
+       <>
+
+       </>
+          }
+        </div>
 
       <ProjectsSection
         openSourceProjects={allOpenSourceProjects}
