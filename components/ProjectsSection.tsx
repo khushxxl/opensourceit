@@ -106,7 +106,7 @@ function ProjectsSection({
               </Button>
 
               {data?.tags && (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                <div className=" flex flex-wrap space-x-2 mt-4">
                   {data?.tags?.map((tag: string, i: number) => (
                     <div
                       className="bg-gray-200 p-1 rounded-2xl w-fit px-3 text-xs"

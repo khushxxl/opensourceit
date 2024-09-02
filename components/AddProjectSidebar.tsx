@@ -257,21 +257,22 @@ function AddProjectSidebar({
           </p>
         </div>
 
-        <div className="grid grid-cols-3 place-items-start gap-3 place-content-start">
-          {formData.tags.map((data, i) => (
-            <div
-              className="bg-gray-200 flex items-center w-fit p-1 h-fit rounded-2xl px-3 text-xs"
-              key={i}
-            >
-              {data.length > 8 ? `${data.slice(0, 8)}...` : data}
-              <XIcon
-                size={14}
-                className="ml-1 cursor-pointer"
-                onClick={() => removeTag(i)}
-              />
-            </div>
-          ))}
-        </div>
+        <div className="flex flex-wrap gap-3 max-w-full">
+  {formData.tags.map((data, i) => (
+    <div
+      className="bg-gray-200 flex items-center p-1 h-fit rounded-2xl px-3 text-xs w-auto"
+      key={i}
+    >
+      {data.length > 8 ? `${data.slice(0, 8)}...` : data}
+      <XIcon
+        size={14}
+        className="ml-1 cursor-pointer"
+        onClick={() => removeTag(i)}
+      />
+    </div>
+  ))}
+</div>
+
         {formData.tags.length >= 5 && (
           <p className="text-xs text-red-600">
             You can enter a maximum of 5 tags
