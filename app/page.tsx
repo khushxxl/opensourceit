@@ -12,6 +12,8 @@ import Link from "next/link";
 import { getAllOpenSourceProjectsFirebase } from "@/lib/actions/projects.action";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
+import { useUser } from "@clerk/nextjs";
+import { useGitHub } from "use-github-react/dist/use-github";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,6 +60,12 @@ export default function Home() {
   useEffect(() => {
     getAllOpenSourceProjectsFirebase();
   }, []);
+
+  const { user } = useUser();
+  const { getRepositories } = useGitHub({ username: user?.username! });
+  const repositories = getRepositories().all();
+
+  // console.log(repositories);
 
   useEffect(() => {
     console.log("logging all projects", allOpenSourceProjects);

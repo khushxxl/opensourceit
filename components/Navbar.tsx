@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { AppContext } from "@/context/AppContext";
 import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
+import { AddProjectDialog } from "./AddProjectDialog";
 
 function Navbar() {
   const {
@@ -40,6 +41,7 @@ function Navbar() {
             >
               <Plus size={18} className="mr-2" /> Add Project
             </Button>
+            {/* <AddProjectDialog /> */}
             <UserButton />
           </div>
         ) : (

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -12,6 +12,7 @@ import { AppContext } from "@/context/AppContext";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
 import Image from "next/image";
+import { ProjectSelector } from "./ProjectSelector";
 
 function AddProjectSidebar({
   handleCloseSidebar,
@@ -19,13 +20,15 @@ function AddProjectSidebar({
   handleCloseSidebar: any;
 }) {
   const { user } = useUser();
-
   const { allOpenSourceProjects, setallOpenSourceProjects } =
     useContext(AppContext);
 
+  const [selectedProject, setselectedProject] = useState<any>();
+
+  // Update form data to include the selected project
   const [formData, setFormData] = useState({
     projectName: "",
-    projectBy: "",
+    projectBy: user?.username,
     projectDescription: "",
     githubURL: "",
     tags: [] as string[],
@@ -37,6 +40,17 @@ function AddProjectSidebar({
     },
     twitterlink: "",
   });
+
+  // Update form when a project is selected
+  const handleProjectSelection = (project: any) => {
+    setselectedProject(project);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      projectName: project.name, // Optional: set the project name as well
+      githubURL: project.html_url, // Update the GitHub URL to the repo URL
+    }));
+  };
+
   const [tag, setTag] = useState("");
 
   const handleInputChange = (
@@ -56,9 +70,7 @@ function AddProjectSidebar({
   };
 
   const handleAdd = (event: any) => {
-   
-      addTags();
-  
+    addTags();
   };
 
   const getAllOpenSourceProjectsFirebase = async () => {
@@ -78,6 +90,7 @@ function AddProjectSidebar({
 
     setallOpenSourceProjects(projects);
   };
+
   const addTags = () => {
     if (formData.tags.length >= 5 || tag.length > 8) {
       return;
@@ -106,6 +119,7 @@ function AddProjectSidebar({
     }
     return true;
   };
+
   const [loading, setloading] = useState(false);
 
   const handleSubmit = async () => {
@@ -157,24 +171,18 @@ function AddProjectSidebar({
         </p>
       </div>
       <div className="space-y-5 mt-10">
-        <div>
-          <Label>Project Name</Label>
-          <Input
-            name="projectName"
-            className="mt-3"
-            value={formData.projectName}
-            onChange={handleInputChange}
-            required
-            placeholder="Enter name of your project"
-          />
-        </div>
+        <ProjectSelector
+          selectedProject={selectedProject}
+          setSelectedProject={handleProjectSelection} // Update selected project and GitHub URL
+        />
+        {/* Project Name is now set based on the selected project */}
         <div>
           <Label>Project By</Label>
           <Input
             name="projectBy"
             className="mt-3"
-            value={formData.projectBy}
-            onChange={handleInputChange}
+            value={formData.projectBy!}
+            // onChange={handleInputChange}
             required
             placeholder="Enter your name"
           />
@@ -197,7 +205,7 @@ function AddProjectSidebar({
             className="mt-3"
             placeholder="https://github.com/username/repo"
             value={formData.githubURL}
-            onChange={handleInputChange}
+            // onChange={handleInputChange}
             required
           />
         </div>
@@ -236,50 +244,56 @@ function AddProjectSidebar({
 
         <div>
           <Label>Tags (Eg. Tech Stack)</Label>
-      
 
           <div className="flex w-full items-center space-x-2">
-        <Input
-            onChange={(e) => setTag(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="mt-3"
-            placeholder="Eg. Nextjs"
-            value={tag}
-            maxLength={8}
-          />
-          <p className= " text-blue-800 hover:text-blue-950 cursor-pointer font-semibold py-2 px-3 mt-3 text-sm " onClick={handleAdd} >Add</p>
-        </div>
+            <Input
+              onChange={(e) => setTag(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="mt-3"
+              placeholder="Eg. Nextjs"
+              value={tag}
+              maxLength={8}
+            />
+            <p
+              className=" text-blue-800 hover:text-blue-950 cursor-pointer font-semibold py-2 px-3 mt-3 text-sm "
+              onClick={handleAdd}
+            >
+              Add
+            </p>
+          </div>
           <p
-            className={`text-xs ${tag.length > 8 ? "text-red-600" : "text-gray-600"
-              }`}
+            className={`text-xs ${
+              tag.length > 8 ? "text-red-600" : "text-gray-600"
+            }`}
           >
             {tag.length}/8
           </p>
+
+          <div className="mt-4">
+            {formData.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="inline-block bg-blue-100  rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+              >
+                {tag}{" "}
+                <XIcon
+                  onClick={() => removeTag(index)}
+                  className="inline-block w-4 h-4 ml-2 cursor-pointer"
+                />
+              </span>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-3 place-items-start gap-3 place-content-start">
-          {formData.tags.map((data, i) => (
-            <div
-              className="bg-gray-200 flex items-center w-fit p-1 h-fit rounded-2xl px-3 text-xs"
-              key={i}
-            >
-              {data.length > 8 ? `${data.slice(0, 8)}...` : data}
-              <XIcon
-                size={14}
-                className="ml-1 cursor-pointer"
-                onClick={() => removeTag(i)}
-              />
-            </div>
-          ))}
+        <div className="text-center">
+          <Button
+            className="bg-gradient-to-t from-purple-800 via-violet-900 to-purple-800 text-white"
+            onClick={handleSubmit}
+            // loading={loading}
+          >
+            Add your project
+          </Button>
         </div>
-        {formData.tags.length >= 5 && (
-          <p className="text-xs text-red-600">
-            You can enter a maximum of 5 tags
-          </p>
-        )}
-        <Button disabled={loading} className="px-10" onClick={handleSubmit}>
-          Submit
-        </Button>
       </div>
     </motion.div>
   );

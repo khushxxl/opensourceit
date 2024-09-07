@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Button } from "./ui/button";
 import { AppContext } from "@/context/AppContext";
-import { XIcon } from "lucide-react";
+import { GitBranch, XIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "@/firebase";
+import Link from "next/link";
 
 function ProjectsSection({
   openSourceProjects,
@@ -75,9 +76,14 @@ function ProjectsSection({
               key={i}
               className="border rounded  relative max-w-lg min-h-[350px] min-w-[300px] p-5"
             >
-              <p className="font-bold text-lg bg-gradient-to-t mt-5 from-purple-800 h-fit via-violet-900 to-purple-800 text-transparent bg-clip-text">
-                {data?.projectName}
-              </p>
+              <Link target="_blank" href={data?.githubURL}>
+                <div className="flex items-center mt-5 space-x-2 underline">
+                  <GitBranch size={20} />
+                  <p className="font-bold text-lg bg-gradient-to-t from-purple-800 h-fit via-violet-900 to-purple-800 text-transparent bg-clip-text">
+                    {data?.projectName}
+                  </p>
+                </div>
+              </Link>
 
               {user?.emailAddresses[0].emailAddress ===
                 data?.projectOwner?.emailId && (
