@@ -19,7 +19,7 @@ function AddProjectSidebar({
 }: {
   handleCloseSidebar: any;
 }) {
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const { allOpenSourceProjects, setallOpenSourceProjects } =
     useContext(AppContext);
 
@@ -147,6 +147,8 @@ function AddProjectSidebar({
     }
   };
 
+  // const { user, isSignedIn } = useUser();
+
   return (
     <motion.div
       className="fixed inset-y-0 right-0 bg-white max-w-md w-full shadow-xl p-10 pt-20 z-50 overflow-y-auto"
@@ -162,139 +164,151 @@ function AddProjectSidebar({
         ✕
       </button>
 
-      <div className="flex items-center space-x-2">
-        <p>
-          <Github />
-        </p>
-        <p className="bg-gradient-to-t text-left from-purple-800 h-fit via-violet-900 to-purple-800 text-xl text-transparent bg-clip-text font-extrabold">
-          Add Project
-        </p>
-      </div>
-      <div className="space-y-5 mt-10">
-        <ProjectSelector
-          selectedProject={selectedProject}
-          setSelectedProject={handleProjectSelection} // Update selected project and GitHub URL
-        />
-        {/* Project Name is now set based on the selected project */}
-        <div>
-          <Label>Project By</Label>
-          <Input
-            name="projectBy"
-            className="mt-3"
-            value={formData.projectBy!}
-            // onChange={handleInputChange}
-            required
-            placeholder="Enter your name"
-          />
-        </div>
-        <div>
-          <Label>What is your project about?</Label>
-          <Textarea
-            name="projectDescription"
-            className="focus:outline-none mt-3"
-            value={formData.projectDescription}
-            onChange={handleInputChange}
-            required
-            placeholder="Describe what is your project about, you can also write about the areas where you would like the community to help you with!"
-          />
-        </div>
-        <div>
-          <Label>Enter Github URL</Label>
-          <Input
-            name="githubURL"
-            className="mt-3"
-            placeholder="https://github.com/username/repo"
-            value={formData.githubURL}
-            // onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div>
-          <Label>Live URL (optional)</Label>
-          <Input
-            name="liveUrl"
-            className="mt-3"
-            placeholder="Enter your Project's URL"
-            value={formData.liveUrl}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
+      {isSignedIn ? (
+        <>
           <div className="flex items-center space-x-2">
-            <Label className="flex items-center space-x-2">
-              Your
-              <Image
-                height={13}
-                width={13}
-                alt=""
-                className="mx-2"
-                src={require("../app/assets/xlogo.png")}
-              />
-              handle (optional)
-            </Label>
-          </div>
-          <Input
-            name="twitterlink"
-            className="mt-3"
-            placeholder="Enter your Project's / Creators Twitter handle"
-            value={formData.twitterlink}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div>
-          <Label>Tags (Eg. Tech Stack)</Label>
-
-          <div className="flex w-full items-center space-x-2">
-            <Input
-              onChange={(e) => setTag(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="mt-3"
-              placeholder="Eg. Nextjs"
-              value={tag}
-              maxLength={8}
-            />
-            <p
-              className=" text-blue-800 hover:text-blue-950 cursor-pointer font-semibold py-2 px-3 mt-3 text-sm "
-              onClick={handleAdd}
-            >
-              Add
+            <p>
+              <Github />
+            </p>
+            <p className="bg-gradient-to-t text-left from-purple-800 h-fit via-violet-900 to-purple-800 text-xl text-transparent bg-clip-text font-extrabold">
+              Add Project
             </p>
           </div>
-          <p
-            className={`text-xs ${
-              tag.length > 8 ? "text-red-600" : "text-gray-600"
-            }`}
-          >
-            {tag.length}/8
-          </p>
+          <div className="space-y-5 mt-10">
+            <ProjectSelector
+              selectedProject={selectedProject}
+              setSelectedProject={handleProjectSelection} // Update selected project and GitHub URL
+            />
+            {/* Project Name is now set based on the selected project */}
+            <div>
+              <Label>Project By</Label>
+              <Input
+                name="projectBy"
+                className="mt-3"
+                value={formData.projectBy!}
+                // onChange={handleInputChange}
+                required
+                placeholder="Enter your name"
+              />
+            </div>
+            <div>
+              <Label>What is your project about?</Label>
+              <Textarea
+                name="projectDescription"
+                className="focus:outline-none mt-3"
+                value={formData.projectDescription}
+                onChange={handleInputChange}
+                required
+                placeholder="Describe what is your project about, you can also write about the areas where you would like the community to help you with!"
+              />
+            </div>
+            <div>
+              <Label>Enter Github URL</Label>
+              <Input
+                name="githubURL"
+                className="mt-3"
+                placeholder="https://github.com/username/repo"
+                value={formData.githubURL}
+                // onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <Label>Live URL (optional)</Label>
+              <Input
+                name="liveUrl"
+                className="mt-3"
+                placeholder="Enter your Project's URL"
+                value={formData.liveUrl}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <Label className="flex items-center space-x-2">
+                  Your
+                  <Image
+                    height={13}
+                    width={13}
+                    alt=""
+                    className="mx-2"
+                    src={require("../app/assets/xlogo.png")}
+                  />
+                  handle (optional)
+                </Label>
+              </div>
+              <Input
+                name="twitterlink"
+                className="mt-3"
+                placeholder="Enter your Project's / Creators Twitter handle"
+                value={formData.twitterlink}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <div className="mt-4">
-            {formData.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="inline-block bg-blue-100  rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
-              >
-                {tag}{" "}
-                <XIcon
-                  onClick={() => removeTag(index)}
-                  className="inline-block w-4 h-4 ml-2 cursor-pointer"
+            <div>
+              <Label>Tags (Eg. Tech Stack)</Label>
+
+              <div className="flex w-full items-center space-x-2">
+                <Input
+                  onChange={(e) => setTag(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="mt-3"
+                  placeholder="Eg. Nextjs"
+                  value={tag}
+                  maxLength={8}
                 />
-              </span>
-            ))}
-          </div>
-        </div>
+                <p
+                  className=" text-blue-800 hover:text-blue-950 cursor-pointer font-semibold py-2 px-3 mt-3 text-sm "
+                  onClick={handleAdd}
+                >
+                  Add
+                </p>
+              </div>
+              <p
+                className={`text-xs ${
+                  tag.length > 8 ? "text-red-600" : "text-gray-600"
+                }`}
+              >
+                {tag.length}/8
+              </p>
 
-        <div className="text-center">
-          <Button
-            className="bg-gradient-to-t from-purple-800 via-violet-900 to-purple-800 text-white"
-            onClick={handleSubmit}
-            // loading={loading}
-          >
-            Add your project
-          </Button>
+              <div className="mt-4">
+                {formData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-block bg-blue-100  rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                  >
+                    {tag}{" "}
+                    <XIcon
+                      onClick={() => removeTag(index)}
+                      className="inline-block w-4 h-4 ml-2 cursor-pointer"
+                    />
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button
+                className="bg-gradient-to-t from-purple-800 via-violet-900 to-purple-800 text-white"
+                onClick={handleSubmit}
+                // loading={loading}
+              >
+                Add your project
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="w-full h-full text-center text-gray-500">
+          <p>Connect with github to add projects</p>
+          <p>
+            If you have already signed in with email, please sign out and sign
+            in with your github account!
+          </p>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 }

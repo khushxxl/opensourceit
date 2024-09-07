@@ -17,6 +17,9 @@
     "react/no-children-prop": "off",
     "react/no-unescaped-entities": "off",
     "@next/next/no-page-custom-font": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "prefer-const": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
